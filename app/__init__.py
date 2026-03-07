@@ -17,7 +17,7 @@ app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 # Ensure uploads directory exists
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
