@@ -20,4 +20,4 @@ class Post(db.Model):
     verification_claims = db.relationship("VerificationClaim", backref="post", lazy=True)
 
     # Relationship with backref and cascade
-    chats = db.relationship('Chat', backref=db.backref('chat_post', lazy=True), cascade='all, delete-orphan')
+    chats = db.relationship('Chat', backref=db.backref('post', lazy=True), cascade='all, delete-orphan')

@@ -6,9 +6,12 @@ from datetime import datetime
 import os
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///lostandfound.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///lostandfound.db")
+# Fix for some postgres hosting providers requiring sslmode to require
+if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = "dev_secret_key"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev_secret_key")
 app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, '..', 'static', 'uploads')
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
