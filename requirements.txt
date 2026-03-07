@@ -8,4 +8,4 @@ eventlet==0.39.1
 pytz==2025.2
 scikit-learn==1.6.1
 google-genai==1.13.0
-chromadb==1.0.8
+python-dotenv

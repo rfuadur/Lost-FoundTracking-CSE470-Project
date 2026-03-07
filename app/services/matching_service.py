@@ -3,22 +3,20 @@ from app.models.post import Post
 from app.models.notification import Notification
 from app import db
 import logging
-import google.genai as genai
-import chromadb
+import os
+import shelve
 import hashlib
+import google.genai as genai
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CACHE_PATH = "./embedding_cache"
 
 class MatchingService:
     def __init__(self):
         try:
-            self.embedding_model = "embedding-001"
-            # Initialize ChromaDB client
-            self.chroma_client = chromadb.PersistentClient(path="./chroma_db")
-            # Create or get collection for embeddings
-            self.embedding_collection = self.chroma_client.create_collection(
-                name="text_embeddings",
-                get_or_create=True
-            )
-
+            self.embedding_model = "gemini-embedding-001"
             # Test the setup
             test_embedding = self._get_embedding("Test")
             if test_embedding is not None:
@@ -31,47 +29,27 @@ class MatchingService:
             self.embedding_model = None
 
     def _get_text_hash(self, text):
-        """Generate a unique hash for the text"""
         return hashlib.md5(text.encode()).hexdigest()
 
     def _get_embedding(self, text):
-        """Helper method to get embeddings with ChromaDB caching"""
+        """Helper method to get embeddings with shelve disk caching"""
         try:
             text_hash = self._get_text_hash(text)
 
-            # Try to get embedding from ChromaDB
-            cached_results = self.embedding_collection.get(
-                ids=[text_hash],
-                include=['embeddings']
-            )
+            with shelve.open(CACHE_PATH) as cache:
+                if text_hash in cache:
+                    logging.info(f"Cache hit for text hash: {text_hash}")
+                    return cache[text_hash]
 
-            # print("Cached results:", cached_results)
-
-            # Properly check if we have valid cached embeddings
-            if (isinstance(cached_results["ids"], list) and len(cached_results["ids"]) > 0):
-                logging.info(f"Using cached embedding for text hash: {text_hash}")
-                print("Cache Hit!")
-                return cached_results['embeddings'][0]
-
-            print("Cache Miss!")
-
-            # If not in cache, generate new embedding
-            client = genai.Client(api_key="AIzaSyD83tsbf2rTP9wg3eihdl2mthhw8Ng9m4Q")
+            client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
             result = client.models.embed_content(
                 model=self.embedding_model,
                 contents=text
             )
             embedding = result.embeddings[0].values
 
-
-            # Store in ChromaDB
-            self.embedding_collection.add(
-                embeddings=[embedding],
-                ids=[text_hash],
-                metadatas=[{"text": text}]
-            )
-
-            print("Stored embedding in ChromaDB")  # Debug log
+            with shelve.open(CACHE_PATH) as cache:
+                cache[text_hash] = embedding
 
             return embedding
         except Exception as e:
