@@ -2,6 +2,7 @@ from flask import Flask, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
+from flask_mail import Mail
 from datetime import datetime
 import os
 
@@ -15,9 +16,18 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev_secret_key")
 app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, '..', 'static', 'uploads')
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
+# Mail Configuration
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@example.com')
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 socketio = SocketIO(app, async_mode='eventlet')
+mail = Mail(app)
 
 # Ensure uploads directory exists
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)

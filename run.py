@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
 from app import app, db, socketio
 from app.models.user import User
 from werkzeug.security import generate_password_hash
