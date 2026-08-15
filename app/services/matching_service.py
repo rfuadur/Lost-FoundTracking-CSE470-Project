@@ -7,9 +7,6 @@ import os
 import shelve
 import hashlib
 import google.genai as genai
-from dotenv import load_dotenv
-
-load_dotenv()
 
 CACHE_PATH = "./embedding_cache"
 

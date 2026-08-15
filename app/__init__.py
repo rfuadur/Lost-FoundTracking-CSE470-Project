@@ -3,9 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
 from flask_wtf import CSRFProtect
+from dotenv import load_dotenv
 from app.utils.time_utils import utc_now
 import logging
 import os
+
+load_dotenv()
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///lostandfound.db")
