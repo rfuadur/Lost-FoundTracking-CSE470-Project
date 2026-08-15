@@ -13,6 +13,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('posts.edit_post', post_id=post.id) }}"
                         enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="mb-3">
                             <label class="form-label">Category</label>
                             <select name="category" class="form-select" required>

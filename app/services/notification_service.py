@@ -1,3 +1,4 @@
+import logging
 from app.repositories.notification_repository import NotificationRepository
 from app.repositories.verification_repository import VerificationRepository
 
@@ -30,7 +31,7 @@ class NotificationService:
             self.notification_repository.delete_user_notifications(user_id)
             return True
         except Exception as e:
-            print(f"Error clearing notifications: {e}")
+            logging.error(f"Error clearing notifications: {e}")
             return False
 
     def get_user_notifications(self, user_id, limit=None):
@@ -49,7 +50,7 @@ class NotificationService:
             }
             return self.notification_repository.create(data)
         except Exception as e:
-            print(f"Error creating verification notification: {e}")
+            logging.error(f"Error creating verification notification: {e}")
             return None
 
     def get_pending_claims_count(self, user_id):
@@ -78,5 +79,5 @@ class NotificationService:
             })
             return True
         except Exception as e:
-            print(f"Error creating chat notifications: {e}")
+            logging.error(f"Error creating chat notifications: {e}")
             return False

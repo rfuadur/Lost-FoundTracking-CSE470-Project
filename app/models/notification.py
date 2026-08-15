@@ -1,5 +1,5 @@
 from app import db
-from datetime import datetime
+from app.utils.time_utils import utc_now
 
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,6 +8,6 @@ class Notification(db.Model):
     message = db.Column(db.String(500), nullable=False)
     link = db.Column(db.String(200))
     is_read = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     
     user = db.relationship('User', backref=db.backref('notifications', lazy=True))

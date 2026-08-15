@@ -1,3 +1,4 @@
+import logging
 from app.models.notification import Notification
 from app import db
 
@@ -40,7 +41,7 @@ class NotificationRepository:
             return True
         except Exception as e:
             db.session.rollback()
-            print(f"Error saving changes: {e}")
+            logging.error(f"Error saving changes: {e}")
             return False
 
     def delete(self, notification):
@@ -51,7 +52,7 @@ class NotificationRepository:
             return True
         except Exception as e:
             db.session.rollback()
-            print(f"Error deleting notification: {e}")
+            logging.error(f"Error deleting notification: {e}")
             return False
 
     def mark_all_read(self, user_id):
@@ -64,5 +65,5 @@ class NotificationRepository:
             return True
         except Exception as e:
             db.session.rollback()
-            print(f"Error marking all notifications as read: {e}")
+            logging.error(f"Error marking all notifications as read: {e}")
             return False

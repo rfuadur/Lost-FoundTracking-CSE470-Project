@@ -12,11 +12,11 @@ class PostService:
         self.matching_service = MatchingService()
         self.local_tz = pytz.timezone('Asia/Dhaka') # Set Asia/Dhaka timezone
 
-    def get_all_lost_items(self):
-        return self.post_repository.get_by_type("lost")
+    def get_all_lost_items(self, page=1):
+        return self.post_repository.get_by_type("lost", page=page)
 
-    def get_all_found_items(self):
-        return self.post_repository.get_by_type("found")
+    def get_all_found_items(self, page=1):
+        return self.post_repository.get_by_type("found", page=page)
 
     def get_user_stats(self, user_id):
         user_posts = self.post_repository.get_by_user_id(user_id)
@@ -100,7 +100,7 @@ class PostService:
 
             return self.post_repository.update(post)
         except Exception as e:
-            print(f"Error updating post: {str(e)}")
+            logging.error(f"Error updating post: {str(e)}")
             raise
 
     def delete(self, post):
@@ -113,28 +113,23 @@ class PostService:
                         if os.path.exists(image_path):
                             os.remove(image_path)
                     except Exception as e:
-                        print(f"Error deleting image {image_name}: {str(e)}")
+                        logging.error(f"Error deleting image {image_name}: {str(e)}")
 
             # Delete the post from database
             return self.post_repository.delete(post)
         except Exception as e:
-            print(f"Error deleting post: {str(e)}")
+            logging.error(f"Error deleting post: {str(e)}")
             raise
 
     def process_matches(self, post):
         """Find and notify users about potential matches"""
         try:
-            print(f"Processing matches for post {post.id}")  # Debug log
             matches = self.matching_service.find_matches(post)
-            print(f"Matches found: {matches}")  # Debug log
+            logging.debug(f"Found {len(matches)} potential matches for post {post.id}")
 
             if matches:
-                print(f"Found {len(matches)} potential matches")  # Debug log
-
                 # Get top 3 matches and notify users
                 for match in matches[:3]:
-                    print(f"Creating notifications for match with score {match['score']}")  # Debug log
-
                     # Notify the original post owner
                     self.matching_service.create_match_notification(
                         post.user_id,
@@ -150,12 +145,9 @@ class PostService:
                         match['post'],
                         match['score']
                     )
-            else:
-                print("No matches found")  # Debug log
 
         except Exception as e:
-            print(f"Error processing matches: {e}")
             logging.error(f"Error processing matches: {e}")
 
-    def search_posts(self, query, filters=None):
-        return self.post_repository.search(query, filters)
+    def search_posts(self, query, filters=None, page=1):
+        return self.post_repository.search(query, filters, page=page)

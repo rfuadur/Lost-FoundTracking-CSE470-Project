@@ -1,3 +1,4 @@
+import logging
 from app.models.post import Post
 from app import db
 from sqlalchemy import or_, and_
@@ -5,9 +6,11 @@ from datetime import datetime
 
 
 class PostRepository:
-    def get_by_type(self, type_name):
+    def get_by_type(self, type_name, page=1, per_page=12):
         return (
-            Post.query.filter_by(type=type_name).order_by(Post.post_date.desc()).all()
+            Post.query.filter_by(type=type_name)
+            .order_by(Post.post_date.desc())
+            .paginate(page=page, per_page=per_page, error_out=False)
         )
 
     def get_by_id(self, post_id):
@@ -40,7 +43,7 @@ class PostRepository:
             .all()
         )
 
-    def search(self, query, filters=None):
+    def search(self, query, filters=None, page=1, per_page=12):
         """
         Search posts with advanced filtering
         """
@@ -81,10 +84,11 @@ class PostRepository:
                 except ValueError:
                     pass
 
-        print("SQL Query:", str(base_query))  # Debug print
-        results = base_query.order_by(Post.post_date.desc()).all()
-        print("Results count:", len(results))  # Debug print
-        return results
+        pagination = base_query.order_by(Post.post_date.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        logging.debug(f"Search returned {pagination.total} results")
+        return pagination
 
     def count_user_posts(self, user_id, type_name=None):
         query = Post.query.filter_by(user_id=user_id)

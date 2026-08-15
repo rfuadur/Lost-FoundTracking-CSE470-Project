@@ -1,5 +1,5 @@
 from app import db
-from datetime import datetime
+from app.utils.time_utils import utc_now
 
 class UserReport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +11,6 @@ class UserReport(db.Model):
     type = db.Column(db.String(50), nullable=False)  # verification, chat, post
     reason = db.Column(db.String(500), nullable=False)
     status = db.Column(db.String(20), default="pending")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     resolved_at = db.Column(db.DateTime)
     admin_notes = db.Column(db.String(500))

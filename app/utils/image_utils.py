@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 from werkzeug.utils import secure_filename
@@ -28,7 +29,7 @@ def save_image(file):
         return new_filename
         
     except Exception as e:
-        print(f"Error saving file: {str(e)}")
+        logging.error(f"Error saving file: {str(e)}")
         return None
 
 def save_images(files):

@@ -1,12 +1,12 @@
 from app import db
-from datetime import datetime
+from app.utils.time_utils import utc_now
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(500), nullable=False)
     category_id = db.Column(db.Integer)
     category_name = db.Column(db.String(100))
-    post_date = db.Column(db.DateTime, default=datetime.utcnow)
+    post_date = db.Column(db.DateTime, default=utc_now)
     lOrF_date = db.Column(db.DateTime)
     location = db.Column(db.String(200))
     images = db.Column(db.String(1000))

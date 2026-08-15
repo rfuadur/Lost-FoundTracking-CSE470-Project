@@ -10,6 +10,7 @@
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Report Found Item</h2>
                     <form method="POST" action="{{ url_for('posts.report_found_item') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="mb-3">
                             <label for="category" class="form-label">Item Category:</label>
                             <select class="form-select" id="category" name="category" required>

@@ -14,7 +14,7 @@
     </div>
 
     <div class="row">
-        {% for item in items %}
+        {% for item in items.items %}
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
                 {% if item.images %}
@@ -43,5 +43,7 @@
         </div>
         {% endfor %}
     </div>
+    {% set pagination = items %}
+    {% include "_pagination.html" %}
 </div>
 {% endblock %}

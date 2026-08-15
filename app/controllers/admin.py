@@ -92,5 +92,6 @@ def manage_posts():
         'date_to': request.args.get('date_to', ''),
         'location': request.args.get('location', '')
     }
-    posts = post_service.search_posts("", filters)  # Changed to use proper search method
+    page = request.args.get('page', 1, type=int)
+    posts = post_service.search_posts("", filters, page=page)  # Changed to use proper search method
     return render_template('admin/manage_posts.html', posts=posts, filters=filters)

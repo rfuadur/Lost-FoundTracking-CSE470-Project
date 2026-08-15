@@ -1,5 +1,5 @@
 from app import db, socketio
-from datetime import datetime
+from app.utils.time_utils import utc_now
 
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,7 +7,7 @@ class Chat(db.Model):
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     is_read = db.Column(db.Boolean, default=False)
 
     # Relationships

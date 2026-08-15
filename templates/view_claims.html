@@ -63,6 +63,7 @@
                                     {% if claim_data.claim.status == 'pending' %}
                                     <form action="{{ url_for('verification.update_claim_status', post_id=post.id, claim_id=claim_data.claim.id) }}"
                                         method="POST" class="me-2">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <input type="hidden" name="status" value="approved">
                                         <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i> Approve
@@ -70,6 +71,7 @@
                                     </form>
                                     <form action="{{ url_for('verification.update_claim_status', post_id=post.id, claim_id=claim_data.claim.id) }}"
                                         method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <input type="hidden" name="status" value="rejected">
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             <i class="fas fa-times"></i> Reject

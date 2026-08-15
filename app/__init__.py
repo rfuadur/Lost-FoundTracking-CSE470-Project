@@ -2,7 +2,9 @@ from flask import Flask, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
-from datetime import datetime
+from flask_wtf import CSRFProtect
+from app.utils.time_utils import utc_now
+import logging
 import os
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
@@ -11,13 +13,27 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:/
 if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
     app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev_secret_key")
+
+debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+secret_key = os.environ.get("SECRET_KEY")
+if not secret_key:
+    if debug_mode:
+        secret_key = "dev_secret_key"
+        logging.warning("SECRET_KEY not set; using an insecure default for local development only.")
+    else:
+        raise RuntimeError(
+            "SECRET_KEY environment variable must be set. "
+            "For local development, set FLASK_DEBUG=true to allow an insecure default."
+        )
+app.config["SECRET_KEY"] = secret_key
+
 app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, '..', 'static', 'uploads')
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 socketio = SocketIO(app)
+csrf = CSRFProtect(app)
 
 # Ensure uploads directory exists
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
@@ -49,7 +65,7 @@ def inject_common_data():
         ).count()
 
     return {
-        'current_year': datetime.utcnow().year,
+        'current_year': utc_now().year,
         'notifications': notifications,
         'notifications_count': notifications_count,
         'unread_chats': unread_chats

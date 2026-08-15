@@ -65,9 +65,6 @@ class MatchingService:
             embedding1 = self._get_embedding(text1)
             embedding2 = self._get_embedding(text2)
 
-            # print("Embedding1:", embedding1)  # Debug log
-            # print("Embedding2:", embedding2)  # Debug log
-
             if embedding1 is None or embedding2 is None:
                 return 0
 
@@ -95,9 +92,7 @@ class MatchingService:
                                 f"{candidate.category_name} {candidate.location}")
 
                 # Calculate similarity score
-                print("Calling compute_text_similarity")  # Debug log
                 score = self.compute_text_similarity(post_text, candidate_text)
-                print("Score:", score)  # Debug log
 
                 # Add category bonus
                 if post.category_name == candidate.category_name:

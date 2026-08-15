@@ -1,7 +1,7 @@
 from app.repositories.user_repository import UserRepository
 from app.repositories.post_repository import PostRepository
 from app.repositories.report_repository import ReportRepository
-from datetime import datetime
+from app.utils.time_utils import utc_now
 
 class AdminService:
     def __init__(self):
@@ -40,7 +40,7 @@ class AdminService:
 
         report_data = {
             'status': 'resolved' if action == 'ban_user' else 'dismissed' if action == 'dismiss' else 'pending',
-            'resolved_at': datetime.utcnow() if action != 'undo' else None
+            'resolved_at': utc_now() if action != 'undo' else None
         }
 
         success = self.report_repository.update(report_id, report_data)

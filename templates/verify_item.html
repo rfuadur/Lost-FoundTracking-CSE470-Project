@@ -17,6 +17,7 @@
                     </div>
 
                     <form method="POST" action="{{ url_for('verification.verify_item', post_id=post.id) }}" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="mb-3">
                             <label for="lost_location" class="form-label">Where did you lose it?</label>
                             <input type="text" class="form-control" id="lost_location" name="lost_location" required>

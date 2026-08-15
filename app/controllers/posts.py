@@ -16,14 +16,16 @@ verification_service = VerificationService()
 @posts_bp.route("/lost-items")
 @login_required
 def lost_items():
-    items = post_service.get_all_lost_items()
+    page = request.args.get("page", 1, type=int)
+    items = post_service.get_all_lost_items(page=page)
     return render_template("lost_items.html", items=items)
 
 
 @posts_bp.route("/found-items")
 @login_required
 def found_items():
-    items = post_service.get_all_found_items()
+    page = request.args.get("page", 1, type=int)
+    items = post_service.get_all_found_items(page=page)
     return render_template("found_items.html", items=items)
 
 
@@ -170,11 +172,8 @@ def search():
     # Remove empty filters
     filters = {k: v for k, v in filters.items() if v}
 
-    # For debugging
-    print("Search query:", query)
-    print("Applied filters:", filters)
-
-    results = search_service.search_posts(query, filters)
+    page = request.args.get("page", 1, type=int)
+    results = search_service.search_posts(query, filters, page=page)
     return render_template(
         "search_results.html",
         query=query,

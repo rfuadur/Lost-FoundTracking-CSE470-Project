@@ -1,5 +1,5 @@
 from app import db
-from datetime import datetime
+from app.utils.time_utils import utc_now
 from sqlalchemy import event
 
 class VerificationClaim(db.Model):
@@ -8,7 +8,7 @@ class VerificationClaim(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     status = db.Column(db.String(50), default="pending")
     proof_details = db.Column(db.String(1000))
-    submission_date = db.Column(db.DateTime, default=datetime.utcnow)
+    submission_date = db.Column(db.DateTime, default=utc_now)
     verification_score = db.Column(db.Float, default=0.0)
     user = db.relationship("User", backref="verification_claims", foreign_keys=[user_id])
 

@@ -41,15 +41,27 @@ This project is a web-based platform designed to help users report, search, and 
 ### Admin Control  
 - Admins can oversee reports, manage disputes, and ensure compliance with platform rules.  
 
-## Technologies  
-- **Frontend**: HTML, CSS
-- **Backend**: Flask
-- **Database**: SQLite
+## Technologies
+- **Frontend**: HTML, CSS, Bootstrap, Jinja2
+- **Backend**: Flask, Flask-SocketIO (real-time chat)
+- **Database**: PostgreSQL in production (Render), SQLite for local development
+- **AI Matching**: Google Gemini embeddings (`gemini-embedding-001`) + cosine similarity
 
-## Getting Started  
+## Getting Started
 1. Clone the repository.
-2. Install dependencies.
-3. Run the development server. `> python app.py`
+2. Create a virtualenv and install dependencies: `pip install -r requirements.txt`
+3. Set required environment variables (see below), e.g. via a `.env` file.
+4. Run the development server: `python run.py`
+
+### Environment variables
+| Variable | Required | Purpose |
+|---|---|---|
+| `SECRET_KEY` | Yes (unless `FLASK_DEBUG=true`) | Flask session/CSRF signing key. The app refuses to start without it outside debug mode. |
+| `FLASK_DEBUG` | No | Set to `true` for local development to enable Flask debug mode and allow an insecure default `SECRET_KEY`. |
+| `DATABASE_URL` | No | SQLAlchemy database URI. Defaults to a local `sqlite:///lostandfound.db` if unset. |
+| `GOOGLE_API_KEY` | No | Enables AI-based lost/found matching via Gemini embeddings. Matching is disabled without it. |
+| `SEED_DEMO_USERS` | No | Set to `true` to seed demo `admin@test.com` / `user@test.com` accounts on startup (local dev only). |
+| `DEMO_ADMIN_PASSWORD` / `DEMO_USER_PASSWORD` | No | Override the seeded demo account passwords. |
 
 ## Contributing  
 University group based work.

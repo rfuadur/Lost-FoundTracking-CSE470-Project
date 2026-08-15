@@ -183,6 +183,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ url_for('reports.submit_report') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="modal-body">
                         <input type="hidden" name="report_type" id="reportType">
                         <input type="hidden" name="reported_id" id="reportedId">

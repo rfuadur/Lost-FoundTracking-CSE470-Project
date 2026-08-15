@@ -69,7 +69,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Search Results for "{{ query }}"</h2>
                 <div>
-                    <span class="badge bg-primary">{{ results|length }} items found</span>
+                    <span class="badge bg-primary">{{ results.total }} items found</span>
                     {% if type %}
                         <span class="badge bg-info">Type: {{ type|title }}</span>
                     {% endif %}
@@ -80,8 +80,8 @@
             </div>
 
             <div class="row">
-                {% if results %}
-                    {% for post in results %}
+                {% if results.items %}
+                    {% for post in results.items %}
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm">
                             {% if post.images %}
@@ -124,6 +124,8 @@
                     </div>
                 {% endif %}
             </div>
+            {% set pagination = results %}
+            {% include "_pagination.html" %}
         </div>
     </div>
 </div>
